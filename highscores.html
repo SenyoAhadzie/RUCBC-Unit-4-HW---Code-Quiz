@@ -38,6 +38,18 @@
         }
         catch 
         {
+            var exampleHighScore=["Ayee","2"];
+            localStorage.setItem('highScores', exampleHighScore.toString());
+            
+            var highScoresDiv = document.querySelector('#highScoresDiv');
+            var highScores = localStorage.getItem('highScores');
+
+            // < !--Display data-- >
+            for (var i = 0; i < highScores.length; i++) {
+                var h3El = document.createElement('h3');
+                h3El.textContent = highScores[i];
+                highScoresDiv.appendChild(h3El);
+            }
 
         }
             // < !--Go Back-- >
