@@ -41,7 +41,10 @@
     <div class="row" id="headerElements">
         <!-- View Highscores Element -->
         <div class="col">
-            <button type="button" class="btn btn-primary" id="viewHighScoresEl">View HighScores </button>
+            <form action="./highscores.html">
+                <button type="submit" class="btn btn-primary" id="viewHighScoresEl">View HighScores </button>
+            </form>
+            
         </div>
         <!-- View Time Element -->
         <div class="col">
@@ -56,23 +59,26 @@
 
     </div>
     <!-- Quiz Question Screens -->
-    <div id="QuestionScreen" class="cardStyle">
+    <div id="QuestionScreen" class="cardStyle hide">
         <h1 id="questionScreenQuestion"></h1>
         <div id="qandATable"></div>
     </div>
     <!-- Enter Personal Info Screen -->
-    <div id="recordHighScoresScreen" class="hide">
+    <div id="recordHighScoresScreen" class="cardStyle hide">
         <h1>All done!</h1>
         <div class="row">
-            <div class="col">
+            <!-- <div class="col">
                 <p>Enter intials:</p>
-            </div>
+            </div> -->
             <div class="col">
-                <form name="recordNameForHighScore" id="recordNameForHighScore"></form>
+                <form name="recordNameForHighScore" onsubmit="event.preventDefault(); saveHighScores();" id="recordNameForHighScore">
+                    Enter intials: <input type="text" name="initialsField" id="initialsField">
+                    <input type="submit" value="Submit">
+                </form>
             </div>
-            <div class="col">
+            <!-- <div class="col">
                 <button type="button" class="btn btn-primary" id="submitHighScoresButton">Submit </button>
-            </div>
+            </div> -->
         </div>
     </div>
     <script>
@@ -84,10 +90,21 @@
         var arrayQuestions=["Q1","Q2","Q3"];
         var answerChoices=["A1","A2","A3","A4"];
         var correctAnswers=["A1","A2","A3"];
+
+        var Question1={designation:"Q1", promptStat:"Commonly used data types DO NOT include:", answerChoices:["1. strings","2. booleans","3. alerts", "4. numbers"], correctAnswer:"3. alerts"};
+        var Question2={designation:"Q2", promptStat:"The condition in an if/else statement is enclosed within ___.", answerChoices:["1. quotes","2. curly brackets","3. parentheses", "4. square brackets"], correctAnswer:"2. curly brackets"};
+        var Question3={designation:"Q3", promptStat:"Arrays in JavaScript can be used to store ___.", answerChoices:["1. numbers and strings","2. other arrays","3. booleans", "4. all of the above"], correctAnswer:"4. all of the above"};
+        var Question4={designation:"Q4", promptStat:"String values must be enclosed within ___ when being assigned to variables.", answerChoices:["1. commas","2. curly brackets","3. quotes", "4. parentheses"], correctAnswer:"4. parentheses"};
+        var Question5={designation:"Q5", promptStat:"A very useful tool used during development and debugging for printing content to the debugger is:", answerChoices:["1. JavaScript","2. terminal/bash","3. for loops", "4. console.log"], correctAnswer: "4. console.log"};
+
+        var questionsArray=[Question1,Question2,Question3,Question4,Question5];
+
         var questionAnswered=false;
         var currentQNumber=0;
         var TimeSetInitial=60;
         var TimeCurrent=60;
+        var winningScore=0;
+        var highScores=[];
         
         
         function setTime(){
@@ -96,7 +113,10 @@
 
                 if(TimeCurrent < 1) {
                     clearInterval(timeInterval);
+                    winningScore=TimeCurrent;
                     TimeCurrent=0;
+                    document.querySelector("#QuestionScreen").classList.add('hide');
+                    document.querySelector("#recordHighScoresScreen").classList.remove('hide');
                     //Trigger end screen
                 }
                 else{
@@ -108,9 +128,10 @@
                         questionAnswered=false;
                         currentQNumber=currentQNumber+1;
 
-                        if (currentQNumber<arrayQuestions.length)
+                        if (currentQNumber<questionsArray.length)
                         {
-                            document.querySelector("#questionScreenQuestion").textContent=arrayQuestions[currentQNumber];
+                            // document.querySelector("#questionScreenQuestion").textContent=arrayQuestions[currentQNumber];
+                            document.querySelector("#questionScreenQuestion").textContent=questionsArray[currentQNumber].promptStat;
                             document.querySelector("#qandATable").innerHTML="";
                             for (var j=0;j<answerChoices.length;j++)
                             {
@@ -119,13 +140,16 @@
                                 // debugger;
                                 newAnswerChoiceElement.setAttribute('class', 'btn btn-primary answerButton');
                                 newAnswerChoiceElement.setAttribute('id',`ansChoice${j}`);
-                                newAnswerChoiceElement.textContent=answerChoices[j];
+                                // newAnswerChoiceElement.textContent=answerChoices[j];
+                                newAnswerChoiceElement.textContent=questionsArray[currentQNumber].answerChoices[j];
                                 var rowForNewAnswer=document.createElement("div");
                                 rowForNewAnswer.setAttribute('class', 'row');
                                 rowForNewAnswer.classList.add('noPaddingMarginBorder');
                                 rowForNewAnswer.appendChild(newAnswerChoiceElement);
                                 document.querySelector("#qandATable").appendChild(rowForNewAnswer);
                             }
+                            rightOrWrong=document.createElement("p");
+                            document.querySelector("#qandATable").appendChild(rightOrWrong);
                         }
                     }
                     
@@ -134,8 +158,15 @@
             }, 1000);
         };
 
+        function saveHighScores(){
+            highScores.push(initialsField.value+' - '+winningScore);
+            localStorage.setItem('highScores',highScores);
+            initialsField.value="";
+            //Open Highscores Page
+        }
         
-        document.querySelector("#questionScreenQuestion").textContent=arrayQuestions[currentQNumber];
+        // document.querySelector("#questionScreenQuestion").textContent=arrayQuestions[currentQNumber];
+        document.querySelector("#questionScreenQuestion").textContent=questionsArray[currentQNumber].promptStat;
         document.querySelector("#qandATable").innerHTML="";
         for (var j=0;j<answerChoices.length;j++)
         {
@@ -144,14 +175,18 @@
             // debugger;
             newAnswerChoiceElement.setAttribute('class', 'btn btn-primary answerButton');
             newAnswerChoiceElement.setAttribute('id',`ansChoice${j}`);
-            newAnswerChoiceElement.textContent=answerChoices[j];
+            // newAnswerChoiceElement.textContent=answerChoices[j];
+            newAnswerChoiceElement.textContent=questionsArray[currentQNumber].answerChoices[j];
             var rowForNewAnswer=document.createElement("div");
             rowForNewAnswer.setAttribute('class', 'row');
             rowForNewAnswer.appendChild(newAnswerChoiceElement);
             document.querySelector("#qandATable").appendChild(rowForNewAnswer);
         }
+        var rightOrWrong=document.createElement("p");
+        document.querySelector("#qandATable").appendChild(rightOrWrong);
         
-        setTime();
+        
+        
 
 
         document.addEventListener('click', function(event)
@@ -164,9 +199,10 @@
             if (event.target.classList.contains('answerButton'))
             {
                 var selectedAnswer=event.target.textContent;
-                var rightOrWrong=document.createElement("p");
+                
                 // debugger;
-                if (selectedAnswer===correctAnswers[currentQNumber])
+                // if (selectedAnswer===correctAnswers[currentQNumber])
+                if (selectedAnswer===questionsArray[currentQNumber].correctAnswer)
                 {
                     rightOrWrong.textContent="Correct!"
                 }
@@ -180,7 +216,21 @@
                 console.log(TimeCurrent);
                 console.log(correctAnswers[currentQNumber]);
                 console.log(rightOrWrong.textContent);
-                document.querySelector("#qandATable").appendChild(rightOrWrong);
+                
+            }
+
+            if (event.target.id==="startQuizButton")
+            {
+                setTime();
+                document.querySelector("#WelcomeScreen").classList.add('hide');
+                document.querySelector("#QuestionScreen").classList.remove('hide');
+            }
+
+            if (event.target.id==="viewHighScoresEl")
+            {
+                document.querySelector("#WelcomeScreen").classList.add('hide');
+                document.querySelector("#QuestionScreen").classList.add('hide');
+                document.querySelector("#recordHighScoresScreen").classList.remove('hide');
             }
             // questionAnswered=true;
 
