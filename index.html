@@ -10,26 +10,71 @@
         .hide{
             display:none;
         }
+
+        .cardStyle{
+            padding-left:25%;
+            padding-right:25%;
+        }
+
+        #timeElP{
+            position:absolute;
+            padding-right:0;
+            margin-right:0;
+        }
+
+        .noPaddingMarginBorder{
+            padding:0;
+            margin:0;
+            border:0;
+        }
+
+        .textAlignCenter{
+            text-align:center;
+        }
+        /* #welcomeScreenTitle{
+            padding-left:30%
+        } */
+        
     </style>
 </head>
 <body>
-    <!-- View Highscores Element -->
-    <button type="button" class="btn btn-primary" id="viewHighScoresEl">View HighScores </button>
-    <!-- View Time Element -->
-    <div id="timeEl"><p>Time: <span id="secondsTimeSpan"></span></p></div>
+    <div class="row" id="headerElements">
+        <!-- View Highscores Element -->
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="viewHighScoresEl">View HighScores </button>
+        </div>
+        <!-- View Time Element -->
+        <div class="col">
+            <div id="timeEl"><p id="timeElP">Time: <span id="secondsTimeSpan"></span></p></div>
+        </div>  
+    </div>
     <!-- Welcome Screen -->
-    <div id="WelcomeScreen">
-        <h1>Coding Quiz Challenge</h1>
+    <div id="WelcomeScreen" class="cardStyle textAlignCenter">
+        <h1 id="welcomeScreenTitle">Coding Quiz Challenge</h1>
         <p style="strong">Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score time by ten seconds!</p>
         <button type="button" class="btn btn-primary" id="startQuizButton">Start Quiz </button>
 
     </div>
     <!-- Quiz Question Screens -->
-    <div id="QuestionScreen">
+    <div id="QuestionScreen" class="cardStyle">
         <h1 id="questionScreenQuestion"></h1>
         <div id="qandATable"></div>
     </div>
     <!-- Enter Personal Info Screen -->
+    <div id="recordHighScoresScreen" class="hide">
+        <h1>All done!</h1>
+        <div class="row">
+            <div class="col">
+                <p>Enter intials:</p>
+            </div>
+            <div class="col">
+                <form name="recordNameForHighScore" id="recordNameForHighScore"></form>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary" id="submitHighScoresButton">Submit </button>
+            </div>
+        </div>
+    </div>
     <script>
         // Quiz Question Div Setting
 
@@ -77,6 +122,7 @@
                                 newAnswerChoiceElement.textContent=answerChoices[j];
                                 var rowForNewAnswer=document.createElement("div");
                                 rowForNewAnswer.setAttribute('class', 'row');
+                                rowForNewAnswer.classList.add('noPaddingMarginBorder');
                                 rowForNewAnswer.appendChild(newAnswerChoiceElement);
                                 document.querySelector("#qandATable").appendChild(rowForNewAnswer);
                             }
