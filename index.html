@@ -111,7 +111,7 @@
             var timeInterval=setInterval(function()
             {
 
-                if(TimeCurrent < 1) {
+                if(TimeCurrent < 1 || currentQNumber>questionsArray.length) {
                     clearInterval(timeInterval);
                     winningScore=TimeCurrent;
                     TimeCurrent=0;
